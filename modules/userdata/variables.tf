@@ -8,10 +8,6 @@ variable "is_leader" {
   type = bool
 }
 
-variable "expected_nodes" {
-  type = number
-}
-
 variable "server_url" {
   description = "rke2 server url"
   type        = string

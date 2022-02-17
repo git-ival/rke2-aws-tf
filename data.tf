@@ -2,16 +2,15 @@ module "init-leader" {
   source = "./modules/userdata"
 
   # server_url     = aws_route53_record.public.fqdn
-  server_url     = var.fqdn
-  token_bucket   = module.statestore.bucket
-  token_object   = module.statestore.token_object
-  config         = var.rke2_config
-  pre_userdata   = var.pre_userdata
-  post_userdata  = var.post_userdata
-  ccm            = var.enable_ccm
-  agent          = false
-  is_leader      = true
-  expected_nodes = 1
+  server_url    = var.fqdn
+  token_bucket  = module.statestore.bucket
+  token_object  = module.statestore.token_object
+  config        = var.rke2_config
+  pre_userdata  = var.pre_userdata
+  post_userdata = var.post_userdata
+  ccm           = var.enable_ccm
+  agent         = false
+  is_leader     = true
 }
 
 data "template_cloudinit_config" "leader" {
@@ -62,16 +61,15 @@ module "init-server" {
   source = "./modules/userdata"
 
   # server_url     = aws_route53_record.public.fqdn
-  server_url     = var.fqdn
-  token_bucket   = module.statestore.bucket
-  token_object   = module.statestore.token_object
-  config         = var.rke2_config
-  pre_userdata   = var.pre_userdata
-  post_userdata  = var.post_userdata
-  ccm            = var.enable_ccm
-  agent          = false
-  is_leader      = false
-  expected_nodes = var.servers
+  server_url    = var.fqdn
+  token_bucket  = module.statestore.bucket
+  token_object  = module.statestore.token_object
+  config        = var.rke2_config
+  pre_userdata  = var.pre_userdata
+  post_userdata = var.post_userdata
+  ccm           = var.enable_ccm
+  agent         = false
+  is_leader     = false
 }
 
 data "template_cloudinit_config" "server" {

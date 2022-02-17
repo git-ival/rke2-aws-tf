@@ -78,23 +78,6 @@ identify() {
   fi
 }
 
-wait_for_nodes_to_register() {
-  export PATH=$PATH:/var/lib/rancher/rke2/bin
-  export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
-  runtime="5 minute"
-  endtime=$(date -ud "$runtime" +%s)
-
-  until [ "$${nodes}" = "${expected_nodes}" ]; do
-      sleep 5
-      nodes="$(kubectl get nodes --no-headers | wc -l | awk '{$1=$1;print}')"
-      echo "rke2 nodes: $${nodes}"
-      if [ $(date -u +%s) -ge $endtime ]; then
-        echo "Failed to register expected number of nodes within 5 minutes"
-        break
-      fi
-  done
-}
-
 cp_wait() {
   while true; do
     supervisor_status=$(curl --write-out '%%{http_code}' -sk --output /dev/null https://${server_url}:9345/ping)
@@ -215,8 +198,6 @@ EOF
 
     export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
     export PATH=$PATH:/var/lib/rancher/rke2/bin
-
-    # wait_for_nodes_to_register
 
     if [ $IS_LEADER = "true" ]; then
       # Upload kubeconfig to s3 bucket

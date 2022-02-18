@@ -214,10 +214,11 @@ resource "local_file" "kubeconfig" {
   filename = local.kube_config_path
 }
 
+# need to wait for leader to exist in cluster OR until # servers == expected # (for when user might re-apply the config)
 resource "null_resource" "wait_for_leader_to_register" {
   provisioner "local-exec" {
     command = <<-EOT
-    timeout --preserve-status 7m sh -c -- 'until [ "$${nodes}" -gt 1 ]; do
+    timeout --preserve-status 7m sh -c -- 'until [ "$${nodes}" = "1" || "$${nodes}" = "${var.servers}" ]; do
         sleep 5
         nodes="$(kubectl get nodes --no-headers | wc -l | awk '\''{$1=$1;print}'\'')"
         echo "rke2 nodes: $${nodes}"
@@ -248,7 +249,6 @@ module "servers" {
   extra_block_device_mappings = var.extra_block_device_mappings
   vpc_security_group_ids      = local.security_groups
   spot                        = var.spot
-  # target_group_arns           = concat(module.cp_lb.target_groups, [aws_lb_target_group.server_80.arn, aws_lb_target_group.server_443.arn], var.extra_target_group_arns)
 
   # Overrideable variables
   userdata             = data.template_cloudinit_config.this[1].rendered
@@ -273,7 +273,7 @@ resource "null_resource" "wait_for_servers_to_register" {
   count = var.servers > 1 ? 1 : 0
   provisioner "local-exec" {
     command = <<-EOT
-    timeout --preserve-status 7m sh -c -- 'until [ "$${nodes}" -eq ${var.servers} ]; do
+    timeout --preserve-status 7m sh -c -- 'until [ "$${nodes}" = "${var.servers}" ]; do
         sleep 5
         nodes="$(kubectl get nodes --no-headers | wc -l | awk '\''{$1=$1;print}'\'')"
         echo "rke2 nodes: $${nodes}"

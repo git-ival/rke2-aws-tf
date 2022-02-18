@@ -273,7 +273,7 @@ resource "null_resource" "wait_for_servers_to_register" {
   count = var.servers > 1 ? 1 : 0
   provisioner "local-exec" {
     command = <<-EOT
-    timeout --preserve-status 7m sh -c -- 'until [ "$${nodes}" = "${var.servers - 1}" ]; do
+    timeout --preserve-status 7m sh -c -- 'until [ "$${nodes}" = "${var.servers}" ]; do
         sleep 5
         nodes="$(kubectl get nodes --no-headers | wc -l | awk '\''{$1=$1;print}'\'')"
         echo "rke2 nodes: $${nodes}"

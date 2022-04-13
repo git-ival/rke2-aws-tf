@@ -192,7 +192,7 @@ module "leader" {
   target_group_arns           = local.target_groups
 
   # Overrideable variables
-  userdata             = data.template_cloudinit_config.this[0].rendered
+  userdata             = data.cloudinit_config.this[0].rendered
   iam_instance_profile = var.iam_instance_profile == "" ? module.iam[0].iam_instance_profile : var.iam_instance_profile
 
   # Don't allow something not recommended within etcd scaling, set max deliberately and only control desired
@@ -243,7 +243,7 @@ module "servers" {
   spot                        = var.spot
 
   # Overrideable variables
-  userdata             = data.template_cloudinit_config.this[1].rendered
+  userdata             = data.cloudinit_config.this[1].rendered
   iam_instance_profile = var.iam_instance_profile == "" ? module.iam[0].iam_instance_profile : var.iam_instance_profile
 
   # Don't allow something not recommended within etcd scaling, set max deliberately and only control desired

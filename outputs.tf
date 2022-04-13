@@ -14,6 +14,10 @@ output "cluster_sg" {
   value       = local.cluster_data.cluster_sg
 }
 
+output "templatefile_string" {
+  value = module.init.*.templated
+}
+
 output "server_url" {
   value = local.cluster_data.server_url
 }

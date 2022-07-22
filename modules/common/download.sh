@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+
 export INSTALL_RKE2_TYPE="${type}"
 export INSTALL_RKE2_CHANNEL="${rke2_channel}"
 if [ "${set_rke2_version}" = "true" ]; then

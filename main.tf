@@ -16,8 +16,8 @@ locals {
     cluster_sg = aws_security_group.cluster.id
     token      = module.statestore.token
   }
-  security_groups  = concat([aws_security_group.server.id, aws_security_group.cluster.id, module.cp_lb.security_group], var.extra_security_group_ids)
-  target_groups    = concat(module.cp_lb.target_groups, var.extra_target_group_arns)
+  security_groups = concat([aws_security_group.server.id, aws_security_group.cluster.id, module.cp_lb.security_group], var.extra_security_group_ids)
+  target_groups   = concat(module.cp_lb.target_groups, var.extra_target_group_arns)
 }
 
 resource "random_string" "uid" {
@@ -26,7 +26,7 @@ resource "random_string" "uid" {
   special = false
   lower   = true
   upper   = false
-  number  = true
+  numeric = true
 }
 
 #
@@ -300,7 +300,7 @@ resource "null_resource" "wait_for_ingress" {
       KUBECONFIG = base64encode(data.aws_s3_object.kube_config.body)
     }
   }
-  
+
   depends_on = [
     null_resource.wait_for_leader_to_register,
     null_resource.wait_for_servers_to_register

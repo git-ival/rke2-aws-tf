@@ -294,7 +294,7 @@ resource "aws_autoscaling_attachment" "asg_attachment_bar" {
 resource "null_resource" "wait_for_ingress" {
   provisioner "local-exec" {
     command = <<-EOT
-      timeout --preserve-status 8m bash -c -- 'until [ kubectl get job --all-namespaces | grep -q "helm-install-rke2-ingress-nginx" ]; do
+      timeout --preserve-status 8m bash -c -- 'until kubectl get job --all-namespaces | grep -q "helm-install-rke2-ingress-nginx" ; do
         sleep 5
       done
       kubectl --kubeconfig <(echo $KUBECONFIG | base64 --decode) -n kube-system wait --for=condition=complete job/helm-install-rke2-ingress-nginx'

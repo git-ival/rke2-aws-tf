@@ -192,6 +192,7 @@ module "leader" {
   spot                        = var.spot
   # load_balancers              = [module.cp_lb.name]
   target_group_arns = local.target_group_arns
+  metadata_options  = var.metadata_options
 
   # Overrideable variables
   userdata             = data.cloudinit_config.this[0].rendered
@@ -256,8 +257,8 @@ module "servers" {
   vpc_security_group_ids      = local.security_groups
   spot                        = var.spot
   # load_balancers              = [module.cp_lb.name]
-  # target_group_arns         = local.target_group_arns
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
+  metadata_options          = var.metadata_options
 
   # Overrideable variables
   userdata             = data.cloudinit_config.this[1].rendered

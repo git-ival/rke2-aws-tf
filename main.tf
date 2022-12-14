@@ -259,6 +259,7 @@ module "servers" {
   # load_balancers              = [module.cp_lb.name]
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
   metadata_options          = var.metadata_options
+  associate_public_ip_address = var.associate_public_ip_address
 
   # Overrideable variables
   userdata             = data.cloudinit_config.this[1].rendered

@@ -2,10 +2,6 @@ output "bucket" {
   value = aws_s3_object.token.bucket
 }
 
-output "key" {
-  value = aws_s3_object.token.key
-}
-
 output "token_object" {
   value = aws_s3_object.token.id
 }

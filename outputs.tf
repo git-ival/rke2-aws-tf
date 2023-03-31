@@ -15,7 +15,7 @@ output "cluster_sg" {
 }
 
 output "templatefile_string" {
-  value = module.init.*.templated
+  value = module.init.*.rke2_templated
 }
 
 output "server_url" {

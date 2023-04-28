@@ -27,7 +27,7 @@ timestamp() {
 
 config() {
   mkdir -p "/etc/rancher/rke2"
-  cat <<EOF > "/etc/rancher/rke2/config.yaml"
+  cat <<EOF >> "/etc/rancher/rke2/config.yaml"
 # Additional user defined configuration
 ${config}
 EOF

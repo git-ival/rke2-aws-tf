@@ -100,7 +100,20 @@ variable "min_elb_capacity" {
 }
 
 variable "metadata_options" {
-  type        = map(any)
+  type = object({
+    http_endpoint               = optional(string)
+    http_protocol_ipv6          = optional(string)
+    http_tokens                 = optional(string)
+    http_put_response_hop_limit = optional(number)
+    instance_metadata_tags      = optional(string)
+  })
+  default = {
+    http_endpoint               = null
+    http_protocol_ipv6          = null
+    http_tokens                 = null
+    http_put_response_hop_limit = null
+    instance_metadata_tags      = null
+  }
   description = "Instance Metadata Options"
 }
 

@@ -97,6 +97,11 @@ variable "spot" {
   default     = false
 }
 
+variable "associate_public_ip_address" {
+  default = false
+  type    = bool
+}
+
 variable "extra_target_group_arns" {
   description = "List of additional target group ARNs"
   type        = list(string)

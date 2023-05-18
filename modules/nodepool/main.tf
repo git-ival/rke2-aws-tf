@@ -19,7 +19,7 @@ resource "aws_launch_template" "this" {
   network_interfaces {
     associate_public_ip_address = var.associate_public_ip_address
     delete_on_termination       = true
-    security_groups             = concat(var.vpc_security_group_ids, [aws_security_group.this.id])
+    security_groups             = var.vpc_security_group_ids
   }
 
   block_device_mappings {

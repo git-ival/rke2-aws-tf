@@ -194,15 +194,16 @@ module "leader" {
   vpc_security_group_ids      = local.security_groups
   spot                        = var.spot
   # load_balancers              = [module.cp_lb.name]
-  target_group_arns = local.target_group_arns
-  metadata_options  = var.metadata_options
+  target_group_arns           = local.target_group_arns
+  metadata_options            = var.metadata_options
+  associate_public_ip_address = var.associate_public_ip_address
 
   # Overrideable variables
   userdata             = data.cloudinit_config.this[0].rendered
   iam_instance_profile = var.iam_instance_profile == "" ? module.iam[0].iam_instance_profile : var.iam_instance_profile
 
   # Don't allow something not recommended within etcd scaling, set max deliberately and only control desired
-  asg = { min : 1, max : 1, desired : 1 }
+  asg = { min : 1, max : 1, desired : 1, termination_policies : var.termination_policies }
 
   min_elb_capacity = 1
 

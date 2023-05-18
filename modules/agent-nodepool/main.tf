@@ -97,8 +97,10 @@ data "cloudinit_config" "init" {
       content_type = "text/x-shellscript"
       content = templatefile("${path.module}/../common/download.sh", {
         # Must not use `version` here since that is reserved
-        rke2_version = var.rke2_version
-        type         = "agent"
+        set_rke2_version = length(var.rke2_version) > 0
+        rke2_channel     = var.rke2_channel
+        rke2_version     = var.rke2_version
+        type             = "agent"
 
         rke2_install_script_url = var.rke2_install_script_url
         awscli_url              = var.awscli_url
@@ -133,13 +135,14 @@ module "nodepool" {
   instance_type               = var.instance_type
   block_device_mappings       = var.block_device_mappings
   extra_block_device_mappings = var.extra_block_device_mappings
+  associate_public_ip_address = var.associate_public_ip_address
   vpc_security_group_ids      = concat([var.cluster_data.cluster_sg], var.extra_security_group_ids)
   userdata                    = data.cloudinit_config.init.rendered
   iam_instance_profile        = var.iam_instance_profile == "" ? module.iam[0].iam_instance_profile : var.iam_instance_profile
   asg                         = var.asg
   spot                        = var.spot
   wait_for_capacity_timeout   = var.wait_for_capacity_timeout
-  metadata_options            = var.metadata_options
+  # metadata_options            = var.metadata_options
 
   tags = merge({
     "Role" = "agent",

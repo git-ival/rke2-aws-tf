@@ -7,18 +7,18 @@ export CCM_EXTERNAL="${ccm_external}"
 
 # info logs the given argument at info log level.
 info() {
-    echo "[INFO] " "$@"
+  echo "[INFO] " "$@"
 }
 
 # warn logs the given argument at warn log level.
 warn() {
-    echo "[WARN] " "$@" >&2
+  echo "[WARN] " "$@" >&2
 }
 
 # fatal logs the given argument at fatal log level.
 fatal() {
-    echo "[ERROR] " "$@" >&2
-    exit 1
+  echo "[ERROR] " "$@" >&2
+  exit 1
 }
 
 timestamp() {
@@ -27,14 +27,14 @@ timestamp() {
 
 config() {
   mkdir -p "/etc/rancher/rke2"
-  cat <<EOF >> "/etc/rancher/rke2/config.yaml"
+  cat <<EOF >>"/etc/rancher/rke2/config.yaml"
 # Additional user defined configuration
 ${config}
 EOF
 }
 
 append_config() {
-  echo "$1" >> "/etc/rancher/rke2/config.yaml"
+  echo "$1" >>"/etc/rancher/rke2/config.yaml"
 }
 
 elect_monitor() {
@@ -103,7 +103,7 @@ local_cp_api_wait() {
   while true; do
     info "$(timestamp) Waiting for kube-apiserver..."
     if timeout 1 bash -c "true <>/dev/tcp/localhost/6443" 2>/dev/null; then
-        break
+      break
     fi
     sleep 5
   done
@@ -133,13 +133,13 @@ fetch_token() {
   # Either
   #   a) fetch token from s3 bucket
   #   b) fail
-  if token=$(aws s3 cp "s3://${token_bucket}/${token_object}" - 2>/dev/null);then
+  if token=$(aws s3 cp "s3://${token_bucket}/${token_object}" - 2>/dev/null); then
     info "Found token from s3 object"
   else
     fatal "Could not find cluster token from s3"
   fi
 
-  echo "token: $${token}" >> "/etc/rancher/rke2/config.yaml"
+  echo "token: $${token}" >>"/etc/rancher/rke2/config.yaml"
 }
 
 upload() {
@@ -151,7 +151,7 @@ upload() {
     if [ "$retries" = 0 ]; then
       fatal "Failed to create kubeconfig"
     fi
-    ((retries--))
+    ( (retries--))
   done
 
   # Replace localhost with server url and upload to s3 bucket
@@ -174,13 +174,13 @@ upload() {
 
   if [ $TYPE = "server" ]; then
 
-    cat <<EOF >> "/etc/rancher/rke2/config.yaml"
+    cat <<EOF >>"/etc/rancher/rke2/config.yaml"
 tls-san:
   - ${server_url}
 EOF
 
-    if [ $TYPE = "server" ] && [ $IS_LEADER = "false" ]; then     # additional server joining an existing cluster
-        # Initialize server
+    if [ $TYPE = "server" ] && [ $IS_LEADER = "false" ]; then # additional server joining an existing cluster
+      # Initialize server
       identify
       append_config 'server: https://${server_url}:9345'
       # Wait for cluster to exist, then init another server
@@ -189,7 +189,9 @@ EOF
 
     systemctl enable rke2-server
     systemctl daemon-reload
-
+    if ${rke2_start}; then
+      systemctl start rke2-server
+    fi
 
     export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
     export PATH=$PATH:/var/lib/rancher/rke2/bin
@@ -200,8 +202,6 @@ EOF
 
       # For servers, wait for apiserver to be ready before continuing so that `post_userdata` can operate on the cluster
       local_cp_api_wait
-    elif ${rke2_start}; then
-      systemctl start rke2-server
     fi
 
   else
